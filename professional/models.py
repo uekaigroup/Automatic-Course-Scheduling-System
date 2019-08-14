@@ -8,6 +8,11 @@ class Professional(models.Model):
         max_length=20,
         verbose_name='方向名称'
     )
+    def __str__(self):
+        return self.name
+    class Meta:
+        verbose_name_plural='方向分类'
+
 
 # 阶段表
 class Stage(models.Model):
@@ -24,3 +29,13 @@ class Stage(models.Model):
     order=models.IntegerField(
         verbose_name='阶段排列顺序'
     )
+    p_id=models.ForeignKey(
+        to=Professional,
+        on_delete=models.CASCADE,
+        verbose_name='对应方向',
+        default=None
+    )
+    def __str__(self):
+        return self.name
+    class Meta:
+        verbose_name_plural='阶段'

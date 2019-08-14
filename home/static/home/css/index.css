@@ -1,0 +1,16 @@
+*{
+    padding: 0;
+    margin:0;
+    list-style: none;
+}
+a{
+    text-decoration: none;
+}
+img{
+    display: block;
+}
+h1{
+    text-align: center;
+    color: cornflowerblue;
+    margin-top: 30px;
+}

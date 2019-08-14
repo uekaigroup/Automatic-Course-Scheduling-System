@@ -3,28 +3,18 @@ from professional.models import Stage
 # Create your models here.
 
 
-# 老师代课数据表
-class TeacherData(models.Model):
-    weekday=models.CharField(
-        max_length=20,
-        verbose_name='代课星期'
-    )
-    hours=models.CharField(
-        max_length=20,
-        verbose_name='每天课时'
-    )
-
 # 教师表
 class Teacher(models.Model):
     name=models.CharField(
         max_length=20,
-        verbose_name='教师名字'
+        verbose_name='教师姓名'
     )
-    teacher_data=models.ForeignKey(
-        to=TeacherData,
-        on_delete=models.CASCADE,
-        verbose_name='教师数据表'
-    )
+    def __str__(self):
+        return self.name
+    class Meta:
+        verbose_name_plural='布道师'
+
+
 class Teacher_stage(models.Model):
     t_id=models.ForeignKey(
         to=Teacher,
@@ -39,3 +29,24 @@ class Teacher_stage(models.Model):
     priority=models.IntegerField(
         verbose_name='优先级'
     )
+
+
+# 老师代课数据表
+class TeacherData(models.Model):
+    weekday=models.CharField(
+        max_length=20,
+        verbose_name='代课星期'
+    )
+    hours=models.CharField(
+        max_length=20,
+        verbose_name='每天课时'
+    )
+    t_id=models.ForeignKey(
+        to=Teacher,
+        on_delete=models.CASCADE,
+        verbose_name='对应教师',
+        default=0,
+    )
+
+
+

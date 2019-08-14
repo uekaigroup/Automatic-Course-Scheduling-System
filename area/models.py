@@ -8,3 +8,7 @@ class Area(models.Model):
         max_length=20,
         verbose_name='上课地点'
     )
+    def __str__(self):
+        return self.con
+    class Meta:
+        verbose_name_plural='地点'
