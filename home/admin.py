@@ -14,17 +14,12 @@ class ProfessionalAdmin(admin.ModelAdmin):
 class StageAdmin(admin.ModelAdmin):
     exclude = []
 
-
+# @admin.register(Pub_stage)
+# class Pub_stageAdmin(admin.ModelAdmin):
+#     exclude = []
 
 class TeacherDataInline(admin.TabularInline):
     model = TeacherData
-#
-# @admin.register(TeacherData)
-# class TeacherDataAdmin(admin.ModelAdmin):
-#     inlines = [
-#         TeacherDataInline
-#     ]
-#     exclude = []
 
 @admin.register(Teacher)
 class TeacherAdmin(admin.ModelAdmin):
@@ -32,10 +27,15 @@ class TeacherAdmin(admin.ModelAdmin):
         TeacherDataInline
     ]
     # exclude = []
+
+# class Stage_n_nInline(admin.TabularInline):
+#     model = Stage_n_n
 @admin.register(Classes)
 class ClasseAdmin(admin.ModelAdmin):
     exclude = []
-
+    # inlines = [
+    #     Stage_n_nInline
+    # ]
 @admin.register(Area)
 class AreaAdmin(admin.ModelAdmin):
     exclude = []

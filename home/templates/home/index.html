@@ -10,6 +10,53 @@
     <link rel="stylesheet" href="{% static 'home/css/index.css' %}">
 </head>
 <body>
-<h1>优逸客排课系统</h1>
+<h1>优逸客自动排课系统</h1>
+<form action="{% url 'home:home' %}" style="text-align:center;margin: 15px 0" method="post">
+    {#班级选择#}
+    <label for="">请选择班级：</label>
+    <select name="cla_name" id="">
+        {% for i in classes %}
+        <option value="{{ i.name }}">{{ i.name }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">开始排课</button>
+    <button type="button"><a href="" style="color: black;">重新选择</a></button>
+</form>
+
+{#开始排课#}
+{% if begin %}
+<div class="sys" style="padding: 10px;">
+{#排阶段#}
+    <label for="">请选择阶段：</label>
+    <select name="" id="">
+        {% for i in stages %}
+            <option value="{{ i.name }}">{{ i.name }}</option>
+        {% endfor %}
+    </select><br>
+
+{#排课时#}
+    <label for="">请选择时长：</label>
+    <input type="text" value="{{ hours }}"><br>
+{#排老师#}
+    <label for="">请选择布道师：</label>
+    <select name="" id="">
+
+    </select><br>
+{#排助教，如果需要#}
+    {% for i in classes %}
+        {% if i.is_teacher2 %}
+            <label for="">请选择助教：</label>
+            <select name="" id="">
+
+            </select><br>
+        {% endif %}
+    {% endfor %}
+{#排教室#}
+    <label for="">请选择教室：</label>
+    <select name="" id="">
+
+    </select><br>
+</div>
+{% endif %}
 </body>
 </html>

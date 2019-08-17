@@ -14,3 +14,9 @@ h1{
     color: cornflowerblue;
     margin-top: 30px;
 }
+.sys{
+    width: 800px;
+    height: auto;
+    border: 1px solid cornflowerblue;
+    margin:0 auto;
+}

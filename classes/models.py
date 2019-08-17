@@ -10,7 +10,7 @@ from django import forms
 class class_hours(models.Model):
     week_hours=models.BinaryField(
         max_length=30,
-        verbose_name='每天上下午代课时长',
+        verbose_name='每天上下午带课时长',
         default=None,
     )
     # hours=models.CharField(
@@ -27,6 +27,9 @@ class class_hours(models.Model):
         verbose_name='助教上课天数'
     )
 
+def start():
+    return Stage.objects.filter(name='开训')[0].id
+
 
 # 班级表
 class Classes(models.Model):
@@ -38,10 +41,36 @@ class Classes(models.Model):
         to=Professional,
         on_delete=models.CASCADE
     )
+    stu_num=models.IntegerField(
+        verbose_name='班级人数',
+        default=0
+    )
+    now_stage=models.ForeignKey(
+        to=Stage,
+        on_delete=models.CASCADE,
+        verbose_name='当前阶段',
+        default=start
+    )
+    long_time = models.IntegerField(
+        verbose_name='当前阶段进行时长',
+        default=0
+    )
+    # next_stage = models.ForeignKey(
+    #     to=Stage,
+    #     on_delete=models.CASCADE,
+    #     verbose_name='预测下阶段内容',
+    #     related_name='next_stage',
+    #     null=True,
+    # )
     is_teacher2=models.IntegerField(choices=(
         (0,'不需要助教'),
         (1,'必须要助教')),
         default=0,verbose_name='是否需要助教'
+    )
+    is_outside = models.IntegerField(choices=(
+        (0, '不是校外课程'),
+        (1, '是校外课程')),
+        default=0, verbose_name='是否需要助教'
     )
     area=models.ForeignKey(
         to=Area,
@@ -56,3 +85,28 @@ class Classes(models.Model):
     class Meta:
         verbose_name_plural='班级'
 
+
+# 阶段进行及预测表
+# class Stage_n_n(models.Model):
+#     now_stage=models.ForeignKey(
+#         to=Stage,
+#         on_delete=models.CASCADE,
+#         verbose_name='当前阶段',
+#         default=1,
+#     )
+#     long_time=models.IntegerField(
+#         verbose_name='当前阶段进行时长',
+#         default=0
+#     )
+#     next_stage=models.ForeignKey(
+#         to=Stage,
+#         on_delete=models.CASCADE,
+#         verbose_name='预测下阶段内容',
+#         related_name='next_stage',
+#         default=1
+#     )
+#     c_id=models.ForeignKey(
+#         to=Classes,
+#         on_delete=models.CASCADE,
+#         verbose_name='对应班级',
+#     )

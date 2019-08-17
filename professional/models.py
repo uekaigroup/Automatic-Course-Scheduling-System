@@ -39,3 +39,21 @@ class Stage(models.Model):
         return self.name
     class Meta:
         verbose_name_plural='阶段'
+
+
+# 公共阶段表
+# class Pub_stage(models.Model):
+#     name=models.CharField(
+#         max_length=20,
+#         verbose_name='共有阶段表'
+#     )
+#     long_time=models.IntegerField(
+#         verbose_name='阶段时长',
+#         default=0
+#     )
+#     def __str__(self):
+#         return self.name
+#     class Meta:
+#         verbose_name_plural='公共阶段'
+
+
