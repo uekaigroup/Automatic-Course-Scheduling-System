@@ -8,11 +8,11 @@ from django import forms
 
 # 班级课时数据表
 class class_hours(models.Model):
-    week_hours=models.BinaryField(
-        max_length=30,
-        verbose_name='每天上下午带课时长',
-        default=None,
-    )
+    # week_hours=models.BinaryField(
+    #     max_length=30,
+    #     verbose_name='每天上下午带课时长',
+    #     default=None,
+    # )
     # hours=models.CharField(
     #     max_length=30,
     #     verbose_name='每天上课'
@@ -27,8 +27,8 @@ class class_hours(models.Model):
         verbose_name='助教上课天数'
     )
 
-def start():
-    return Stage.objects.filter(name='开训')[0].id
+# def start():
+#     return Stage.objects.filter(name='开训')[0].id
 
 
 # 班级表
@@ -49,11 +49,21 @@ class Classes(models.Model):
         to=Stage,
         on_delete=models.CASCADE,
         verbose_name='当前阶段',
-        default=start
+        default=None
     )
     long_time = models.IntegerField(
         verbose_name='当前阶段进行时长',
         default=0
+    )
+    isprofessional=models.IntegerField(choices=(
+        (0,'非专业'),
+        (1,'专业')),
+        default=0,verbose_name='是否相关专业'
+    )
+    education=models.IntegerField(choices=(
+        (0,'非本科'),
+        (1,'本科')),
+        default=0,verbose_name='学历'
     )
     # next_stage = models.ForeignKey(
     #     to=Stage,
@@ -62,20 +72,25 @@ class Classes(models.Model):
     #     related_name='next_stage',
     #     null=True,
     # )
-    is_teacher2=models.IntegerField(choices=(
-        (0,'不需要助教'),
-        (1,'必须要助教')),
-        default=0,verbose_name='是否需要助教'
+    is_six=models.IntegerField(choices=(
+        (0,'不是六天制'),
+        (1,'是六天制')),
+        default=0,verbose_name='是否为六天制'
+    )
+    is_teacher2 = models.IntegerField(choices=(
+        (0, '不需要助教'),
+        (1, '必须要助教')),
+        default=0, verbose_name='是否需要助教'
     )
     is_outside = models.IntegerField(choices=(
         (0, '不是校外课程'),
         (1, '是校外课程')),
         default=0, verbose_name='是否需要助教'
     )
-    area=models.ForeignKey(
-        to=Area,
-        on_delete=models.CASCADE,
-        verbose_name='班级上课地点'
+    area=models.CharField(
+        max_length=20,
+        verbose_name='班级上课地点',
+        default=None
     )
     start_time=models.DateTimeField('开班时间',default=timezone.now)
     add_date_time = models.DateTimeField(auto_now_add=True)
@@ -86,27 +101,3 @@ class Classes(models.Model):
         verbose_name_plural='班级'
 
 
-# 阶段进行及预测表
-# class Stage_n_n(models.Model):
-#     now_stage=models.ForeignKey(
-#         to=Stage,
-#         on_delete=models.CASCADE,
-#         verbose_name='当前阶段',
-#         default=1,
-#     )
-#     long_time=models.IntegerField(
-#         verbose_name='当前阶段进行时长',
-#         default=0
-#     )
-#     next_stage=models.ForeignKey(
-#         to=Stage,
-#         on_delete=models.CASCADE,
-#         verbose_name='预测下阶段内容',
-#         related_name='next_stage',
-#         default=1
-#     )
-#     c_id=models.ForeignKey(
-#         to=Classes,
-#         on_delete=models.CASCADE,
-#         verbose_name='对应班级',
-#     )

@@ -3,5 +3,5 @@ from . import views
 
 app_name='classes'
 urlpatterns = [
-    path('',views.index,name='classes'),
+    path('getstage/',views.getstage,name='getstage'),
 ]
