@@ -5,6 +5,7 @@ from orderclasses.order_classes import model
 from teacher.models import Teachstage,Teacher
 import numpy as np
 import json
+from django.http import JsonResponse
 # Create your views here.
 
 
@@ -276,11 +277,8 @@ def getcourse(request,id):
         course2={'time':getN_N_day(),'data':ordercla(request)}
         course3={'time':getN_N_N_day(),'data':ordercla(request)}
         if id==1:
-            print(1)
-            return HttpResponse(str(course1))
+            return HttpResponse(json.dumps(course1))
         elif id==2:
-            print(2)
-            return HttpResponse(str(course2))
+            return HttpResponse(json.dumps(course1))
         elif id==3:
-            print(3)
-            return HttpResponse(str(course3))
+            return HttpResponse(json.dumps(course1))
