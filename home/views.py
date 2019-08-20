@@ -269,16 +269,22 @@ def ordercla(request):
 
     return class_sheet_list
 
+class DateEnconding(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, datetime.date):
+            return o.strftime('%Y/%m/%d')
+
 
 def getcourse(request,id):
+
     if request.method=='GET':
         id=int(id)
         course1={'time':getNextday(),'data':ordercla(request)}
         course2={'time':getN_N_day(),'data':ordercla(request)}
         course3={'time':getN_N_N_day(),'data':ordercla(request)}
         if id==1:
-            return HttpResponse(json.dumps(course1))
+            return HttpResponse(json.dumps(course1,cls=DateEnconding))
         elif id==2:
-            return HttpResponse(json.dumps(course1))
+            return HttpResponse(json.dumps(course1,cls=DateEnconding))
         elif id==3:
-            return HttpResponse(json.dumps(course1))
+            return HttpResponse(json.dumps(course1,cls=DateEnconding))
