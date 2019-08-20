@@ -146,7 +146,8 @@ def ordercla(request):
             if long_time-now_long_time>=48:
                 class_sheet['stage']=[now_stage.name]
                 class_sheet['long_time'] = [48]
-                classes[i].long_time += 48
+                # classes[i].long_time += 48
+                Classes.objects
                 ts=teachstage.filter(stage=now_stage)
                 sortteacher=teacherorder(ts)
                 for i in sortteacher:
@@ -271,9 +272,9 @@ def ordercla(request):
 def getcourse(request,id):
     if request.method=='GET':
         id=int(id)
-        course1={getNextday():ordercla(request)}
-        course2={getN_N_day():ordercla(request)}
-        course3={getN_N_N_day():ordercla(request)}
+        course1={'time':getNextday(),'data':ordercla(request)}
+        course2={'time':getN_N_day(),'data':ordercla(request)}
+        course3={'time':getN_N_N_day(),'data':ordercla(request)}
         if id==1:
             print(1)
             return HttpResponse(str(course1))
