@@ -43,22 +43,59 @@ import datetime
 def getNextday():
     today1 = datetime.date.today()
     today2 = datetime.date.today()
+    today3 = datetime.date.today()
+    today4 = datetime.date.today()
+    today5 = datetime.date.today()
+    today6 = datetime.date.today()
+    today7 = datetime.date.today()
     oneday = datetime.timedelta(days = 1)
     m1 = calendar.MONDAY
-    m2 = calendar.SUNDAY
+    m2 = calendar.TUESDAY
+    m3 = calendar.WEDNESDAY
+    m4 = calendar.THURSDAY
+    m5 = calendar.FRIDAY
+    m6 = calendar.SATURDAY
+    m7 = calendar.SUNDAY
 
     while today1.weekday() != m1:
         today1 += oneday
     while today2.weekday() != m2:
         today2 += oneday
-    today2 += oneday
-    while today2.weekday() != m2:
-        today2 += oneday
+    while today3.weekday() != m3:
+        today3 += oneday
+    today3 += oneday
+    while today3.weekday() != m3:
+        today3 += oneday
+    while today4.weekday() != m4:
+        today4 += oneday
+    today4 += oneday
+    while today4.weekday() != m4:
+        today4 += oneday
+    while today5.weekday() != m5:
+        today5 += oneday
+    today5 += oneday
+    while today5.weekday() != m5:
+        today5 += oneday
+    while today6.weekday() != m6:
+        today6 += oneday
+    today6 += oneday
+    while today6.weekday() != m6:
+        today6 += oneday
+    while today7.weekday() != m7:
+        today7 += oneday
+    today7 += oneday
+    while today7.weekday() != m7:
+        today7 += oneday
 
     nextMonday = today1.strftime('%Y%m%d')
-    nextSunday = today2.strftime('%Y%m%d')
+    nextTuesday = today2.strftime('%Y%m%d')
+    nextWEDNESDAY  = today3.strftime('%Y%m%d')
+    nextTHURSDAY= today4.strftime('%Y%m%d')
+    nextFRIDAY = today5.strftime('%Y%m%d')
+    nextSATURDAY = today6.strftime('%Y%m%d')
+    nextSunday = today7.strftime('%Y%m%d')
 
-    return nextMonday+'-'+nextSunday
+    return [nextMonday,nextTuesday,nextWEDNESDAY,nextTHURSDAY,nextFRIDAY,nextSATURDAY,nextSunday]
 
 def getN_N_day():
     today1 = datetime.date.today()
@@ -86,7 +123,7 @@ def getN_N_day():
     nextMonday = today1.strftime('%Y%m%d')
     nextSunday = today2.strftime('%Y%m%d')
 
-    return nextMonday+'-'+nextSunday
+    return [nextMonday,int(nextMonday)+1,int(nextMonday)+2,int(nextMonday)+3,int(nextMonday)+4,int(nextMonday)+5,nextSunday]
 
 
 def getN_N_N_day():
@@ -120,9 +157,10 @@ def getN_N_N_day():
     nextMonday = today1.strftime('%Y%m%d')
     nextSunday = today2.strftime('%Y%m%d')
 
-    return nextMonday + '-' + nextSunday
+    return [nextMonday,int(nextMonday)+1,int(nextMonday)+2,int(nextMonday)+3,int(nextMonday)+4,int(nextMonday)+5,nextSunday]
 
-def ordercla(request):
+
+def ordercla():
     classes=Classes.objects.all()
     teachstage=Teachstage.objects.all()
     teacher=Teacher.objects.all()
@@ -147,8 +185,10 @@ def ordercla(request):
             if long_time-now_long_time>=48:
                 class_sheet['stage']=[now_stage.name]
                 class_sheet['long_time'] = [48]
-                # classes[i].long_time += 48
-                Classes.objects
+                print('前',classes[i].long_time)
+                classes[i].long_time += 48
+                print('后',classes[i].long_time)
+                # Classes.objects
                 ts=teachstage.filter(stage=now_stage)
                 sortteacher=teacherorder(ts)
                 for i in sortteacher:
@@ -274,17 +314,23 @@ class DateEnconding(json.JSONEncoder):
         if isinstance(o, datetime.date):
             return o.strftime('%Y/%m/%d')
 
+course1={'time':getNextday(),'data':ordercla()}
+course2={'time':getN_N_day(),'data':ordercla()}
+course3={'time':getN_N_N_day(),'data':ordercla()}
 
 def getcourse(request,id):
 
     if request.method=='GET':
         id=int(id)
-        course1={'time':getNextday(),'data':ordercla(request)}
-        course2={'time':getN_N_day(),'data':ordercla(request)}
-        course3={'time':getN_N_N_day(),'data':ordercla(request)}
         if id==1:
+            print(1)
             return HttpResponse(json.dumps(course1,cls=DateEnconding))
         elif id==2:
-            return HttpResponse(json.dumps(course1,cls=DateEnconding))
+            print(2)
+            return HttpResponse(json.dumps(course2,cls=DateEnconding))
         elif id==3:
-            return HttpResponse(json.dumps(course1,cls=DateEnconding))
+            print(3)
+            return HttpResponse(json.dumps(course3,cls=DateEnconding))
+
+def changecourse(request):
+    data=request.POST.get()
