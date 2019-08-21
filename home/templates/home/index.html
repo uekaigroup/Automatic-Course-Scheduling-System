@@ -130,8 +130,8 @@ $(".son1").eq(0).css("background-color","red")
 $(".son1").click(function(){
     index = $(this).index()
     $(".son1").css("background-color","#93D1DE").eq(index).css("background-color","red")
-    url1 = `/getcourse/${index}/`
-    url2 = `/changecourse/${index}/`
+    url1 = `/getcourse/${index+1}/`
+    url2 = `/changecourse/${index+1}/`
     $.ajax({
         url:url1,
         type:"get",
@@ -231,22 +231,22 @@ function render(data){
 
 
 // 排课
-$("#pk").click(function(){
+{#$("#pk").click(function(){#}
+{##}
+{#    $.ajax({#}
+{#<<<<<<< HEAD#}
+{#        url:"/getcourse/2/",#}
+{#=======#}
+{#        url:url1,#}
+{#>>>>>>> f3813b2adb375697db8c835f4e9b5f47a1d078ca#}
+{#        type:"get",#}
+{#        dataType:"json",#}
+{#        success:function(data){#}
+{#            data0 = data#}
+{#            render(data)#}
+{#        }#}
+{#    });})#}
 
-    $.ajax({
-<<<<<<< HEAD
-        url:"/getcourse/2/",
-=======
-        url:url1,
->>>>>>> f3813b2adb375697db8c835f4e9b5f47a1d078ca
-        type:"get",
-        dataType:"json",
-        success:function(data){
-            data0 = data
-            render(data)
-        }
-    });
-})
 
 let flag = true
 
