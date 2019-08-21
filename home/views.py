@@ -375,4 +375,4 @@ def changecourse(request,id):
         courseweek.update(second_week=data)
     else:
         courseweek.update(third_week=data)
-    return redirect(reverse('home:home'))
+    return HttpResponse('ok')
