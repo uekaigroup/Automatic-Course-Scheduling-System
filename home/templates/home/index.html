@@ -115,11 +115,16 @@
 <script>
 {#let arr = [{'classname': 'UAIF1908', 'area': '205', 'stage': ['html,css(ai)'], 'long_time': [40], 'teacher': ['杨登辉']}, {'classname': 'UBDF1907', 'area': '502', 'stage': ['java'], 'long_time': [48], 'teacher': ['石永鑫']}, {'classname': 'MUIDF1907-2','area': '202', 'stage': ['平面'], 'long_time': [40], 'teacher': ['索晓勇']}, {'classname': 'WUIF1907', 'area': '201', 'stage': ['html,css(qz)'], 'long_time': [40], 'teacher': ['候宁州']}, {'classname': 'UAIF1907', 'area': '303', 'stage': ['html,css(ai)'], 'long_time': [40], 'teacher': ['刘涛']}]#}
 
-
+function getDate(time){
+    let str = ""
+    time.forEach((item,index)=>{
+        str+=`<td>${time[index].slice(4,6)+'月'+time[index].slice(6,8)+"日"}</td>`
+    })
+    return str
+}
 
 function render(data){
-    let time = data.time.split("-")
-    console.log(time)
+
     let str = `<table class="table table-striped table-bordered" style="width:900px;" align="center" contentEditable="false">
     <tbody>
         <tr align="center"><tr align="center">
@@ -135,13 +140,7 @@ function render(data){
         </tr>
         <tr align="center" class="date">
             <td></td>
-            <td>8月21</td>
-            <td>8月21</td>
-            <td>8月22</td>
-            <td>8月23</td>
-            <td>8月24</td>
-            <td>8月25</td>
-            <td>8月26</td>
+            ${getDate(data.time)}
         </tr>`
 
     data.data.forEach((item,index)=>{
@@ -200,6 +199,7 @@ function render(data){
 
 let data0 = ""
 $("#pk").click(function(){
+
     $.ajax({
         url:"getcourse/1/",
         type:"get",
@@ -227,7 +227,7 @@ $("#edit").click(function(){
 })
 function save(){
     let arr = $("table tr")
-    let date = []
+    let data = []
     let i=0
     $(".kc").each((index,item)=>{
         let bj = $(item).children("td").eq(0).html()
@@ -237,14 +237,14 @@ function save(){
         let js = $(item).next(".teacher").next(".js").children("td").eq(1).html()
         //{'classname': 'UAIF1908', 'area': '205', 'stage': ['html,css(ai)'], 'long_time': [40], 'teacher': ['杨登辉']}
         let obj = {'classname':bj,area:js,stage:[zy],long_time:[is40],teacher:[teacher]}
-        date.push(obj)
+        data.push(obj)
 
     })
     data0.data = data
     $.ajax({
-        'url':"getcourse/1/",
+        'url':"changecourse/1/",
         type:"post",
-        data:{"data",data},
+        data:{"data":data0},
         success:function(data){
             console.log(data)
         }
