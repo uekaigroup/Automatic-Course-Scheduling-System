@@ -44,12 +44,12 @@
         山西优逸客智能排课系统
     </h2>
     <div class="menu">
-        <div class="son" id= "pk" style="background-color:#62BAA2;">排课</div>
-        <div class="son" style="background-color:#93D1DE;">1</div>
-        <div class="son" style="background-color:#93D1DE;">2</div>
-        <div class="son" style="background-color:#93D1DE;">3</div>
+        <!--<div class="son" id= "pk" style="background-color:#62BAA2;">排课</div>-->
+        <div class="son son1" style="background-color:#93D1DE;">1</div>
+        <div class="son son1" style="background-color:#93D1DE;">2</div>
+        <div class="son son1" style="background-color:#93D1DE;">3</div>
         <div class="son" id="edit" style="background-color:#C398A9;">编辑</div>
-        <div class="son" style="background-color:#5597C9;">置顶</div>
+        <!--<div class="son" style="background-color:#5597C9;">置顶</div>-->
     </div>
     <!-- <table class="table table-striped table-bordered" style="width:900px;" align="center" contentEditable="true"> -->
         <!-- 表头 -->
@@ -114,6 +114,34 @@
 </body>
 <script>
 {#let arr = [{'classname': 'UAIF1908', 'area': '205', 'stage': ['html,css(ai)'], 'long_time': [40], 'teacher': ['杨登辉']}, {'classname': 'UBDF1907', 'area': '502', 'stage': ['java'], 'long_time': [48], 'teacher': ['石永鑫']}, {'classname': 'MUIDF1907-2','area': '202', 'stage': ['平面'], 'long_time': [40], 'teacher': ['索晓勇']}, {'classname': 'WUIF1907', 'area': '201', 'stage': ['html,css(qz)'], 'long_time': [40], 'teacher': ['候宁州']}, {'classname': 'UAIF1907', 'area': '303', 'stage': ['html,css(ai)'], 'long_time': [40], 'teacher': ['刘涛']}]#}
+let url1 = "/getcourse/1/" // 排课
+let url2 = "/changecourse/1/" // 保存排课
+let data0 = ""
+$.ajax({
+    url:url1,
+    type:"get",
+    dataType:"json",
+    success:function(data){
+        data0 = data
+        render(data)
+    }
+});
+$(".son1").eq(0).css("background-color","red")
+$(".son1").click(function(){
+    index = $(this).index()
+    $(".son1").css("background-color","#93D1DE").eq(index).css("background-color","red")
+    url1 = `/getcourse/${index}/`
+    url2 = `/changecourse/${index}/`
+    $.ajax({
+        url:url1,
+        type:"get",
+        dataType:"json",
+        success:function(data){
+            data0 = data
+            render(data)
+        }
+    });
+})
 
 function getDate(time){
     let str = ""
@@ -124,7 +152,7 @@ function getDate(time){
 }
 
 function render(data){
-
+    $("body").remove("table")
     let str = `<table class="table table-striped table-bordered" style="width:900px;" align="center" contentEditable="false">
     <tbody>
         <tr align="center"><tr align="center">
@@ -197,11 +225,20 @@ function render(data){
 
 }
 
-let data0 = ""
+
+
+
+
+
+// 排课
 $("#pk").click(function(){
 
     $.ajax({
+<<<<<<< HEAD
         url:"/getcourse/2/",
+=======
+        url:url1,
+>>>>>>> f3813b2adb375697db8c835f4e9b5f47a1d078ca
         type:"get",
         dataType:"json",
         success:function(data){
@@ -212,6 +249,8 @@ $("#pk").click(function(){
 })
 
 let flag = true
+
+// 修改保存
 $("#edit").click(function(){
     if(flag){
         $(this).html("保存")
@@ -225,6 +264,7 @@ $("#edit").click(function(){
     }
 
 })
+
 function save(){
     let arr = $("table tr")
     let data = []
@@ -242,7 +282,7 @@ function save(){
     })
     data0.data = data
     $.ajax({
-        'url':"/changecourse/1/",
+        'url':url2,
         type:"post",
         data:{"data":data0},
         success:function(data){
