@@ -1,4 +1,4 @@
-from django.shortcuts import render,HttpResponse
+from django.shortcuts import render,HttpResponse,redirect,reverse
 from classes.models import Classes
 from professional.models import Stage,Professional,StageOrder
 from orderclasses.order_classes import model
@@ -332,5 +332,12 @@ def getcourse(request,id):
             print(3)
             return HttpResponse(json.dumps(course3,cls=DateEnconding))
 
-def changecourse(request):
-    data=request.POST.get()
+def changecourse(request,id):
+    data=request.POST.get('data',None)
+    if id==1:
+        course1=data
+    elif id==2:
+        course2=data
+    else:
+        course3=data
+    return redirect(reverse('home:home'))
