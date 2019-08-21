@@ -1,4 +1,4 @@
-from django.shortcuts import render,HttpResponse
+from django.shortcuts import render,HttpResponse,redirect,reverse
 from classes.models import Classes
 from professional.models import Stage,Professional,StageOrder
 from orderclasses.order_classes import model
@@ -340,3 +340,4 @@ def changecourse(request,id):
         course2=data
     else:
         course3=data
+    return redirect(reverse('home:home'))
