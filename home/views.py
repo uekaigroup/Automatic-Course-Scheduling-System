@@ -11,20 +11,18 @@ from django.http import JsonResponse
 
 
 
-def home(request,id=0):
+def home(request):
     classes=Classes.objects.all()
     courseweek=Course_week.objects.all()
-    id=int(id)
-    print(id)
-    data=None
-    if not courseweek:
-        return render(request, 'home/index.html', {'data': data})
-    if id==1:
-        data=courseweek[0].first_week
-    elif id==2:
-        data = courseweek[0].second_week
-    elif id==3:
-        data = courseweek[0].third_week
+    data=courseweek
+    # if not courseweek:
+    #     return render(request, 'home/index.html', {'data': data})
+    # if id==1:
+    #     data=courseweek[0].first_week
+    # elif id==2:
+    #     data = courseweek[0].second_week
+    # elif id==3:
+    #     data = courseweek[0].third_week
     return render(request, 'home/index.html',{'data':data})
     
 
@@ -369,6 +367,7 @@ def changecourse(request,id):
     courseweek=Course_week.objects.all()
     data=request.POST.get('data',None)
     data = json.dumps(data)
+    id=int(id)
     if id==1:
         courseweek.update(first_week=data)
     elif id==2:
