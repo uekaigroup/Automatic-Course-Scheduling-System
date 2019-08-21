@@ -134,7 +134,7 @@ def getN_N_day():
     nextMonday = today1.strftime('%Y%m%d')
     nextSunday = today2.strftime('%Y%m%d')
 
-    return [nextMonday,int(nextMonday)+1,int(nextMonday)+2,int(nextMonday)+3,int(nextMonday)+4,int(nextMonday)+5,nextSunday]
+    return [nextMonday,'int(nextMonday)+1','int(nextMonday)+2','int(nextMonday)+3','int(nextMonday)+4','int(nextMonday)+5',nextSunday]
 
 
 def getN_N_N_day():
@@ -168,7 +168,7 @@ def getN_N_N_day():
     nextMonday = today1.strftime('%Y%m%d')
     nextSunday = today2.strftime('%Y%m%d')
 
-    return [nextMonday,int(nextMonday)+1,int(nextMonday)+2,int(nextMonday)+3,int(nextMonday)+4,int(nextMonday)+5,nextSunday]
+    return [nextMonday,'int(nextMonday)+1','int(nextMonday)+2','int(nextMonday)+3','int(nextMonday)+4','int(nextMonday)+5',nextSunday]
 
 
 def ordercla():
@@ -366,12 +366,17 @@ def getcourse(request,id):
 def changecourse(request,id):
     courseweek=Course_week.objects.all()
     data=request.POST.get('data',None)
+    if data==None or 'null' or '' or "":
+        return HttpResponse('数据错误')
     data = json.dumps(data)
+
     id=int(id)
     if id==1:
         courseweek.update(first_week=data)
     elif id==2:
         courseweek.update(second_week=data)
-    else:
+    elif id==3:
         courseweek.update(third_week=data)
+    else:
+        return HttpResponse('信息错误')
     return HttpResponse('ok')
