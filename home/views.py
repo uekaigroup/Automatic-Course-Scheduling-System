@@ -5,15 +5,25 @@ from orderclasses.order_classes import model
 from teacher.models import Teachstage,Teacher
 import numpy as np
 import json
+from .models import Course_week
 from django.http import JsonResponse
 # Create your views here.
 
 
 
-def home(request):
+def home(request,id=0):
     classes=Classes.objects.all()
-    if request.method=='GET':
-        return render(request, 'home/index.html',{'classes':classes})
+    courseweek=Course_week.objects.all()
+    id=int(id)
+    print(id)
+    data=None
+    if id==1:
+        data=courseweek[0].first_week
+    elif id==2:
+        data = courseweek[0].second_week
+    elif id==3:
+        data = courseweek[0].third_week
+    return render(request, 'home/index.html',{'data':data})
     
 
 # 根据前置课程获取阶段优先级排序列表
@@ -303,7 +313,7 @@ def ordercla():
         classes[i].save()
         class_sheet_list.append(class_sheet)
     Teacher.objects.all().update(teachtime=0)
-    print(class_sheet_list)
+    # print(class_sheet_list)
 
 
 
@@ -314,30 +324,51 @@ class DateEnconding(json.JSONEncoder):
         if isinstance(o, datetime.date):
             return o.strftime('%Y/%m/%d')
 
-course1={'time':getNextday(),'data':ordercla()}
-course2={'time':getN_N_day(),'data':ordercla()}
-course3={'time':getN_N_N_day(),'data':ordercla()}
+# course1={'time':getNextday(),'data':ordercla()}
+# course2={'time':getN_N_day(),'data':ordercla()}
+# course3={'time':getN_N_N_day(),'data':ordercla()}
 
 def getcourse(request,id):
-
+    print(1)
+    courseweek=Course_week.objects.all()
+    print(courseweek)
     if request.method=='GET':
         id=int(id)
         if id==1:
-            print(1)
-            return HttpResponse(json.dumps(course1,cls=DateEnconding))
+            if courseweek:
+                course1=courseweek[0].first_week
+                return HttpResponse(json.dumps(course1,cls=DateEnconding))
+            else:
+                course1 = {'time':getNextday(),'data':ordercla()}
+                courseweek.create(first_week=course1)
+                return HttpResponse(json.dumps(course1, cls=DateEnconding))
         elif id==2:
-            print(2)
-            return HttpResponse(json.dumps(course2,cls=DateEnconding))
+            if courseweek[0].second_week:
+                course1 = courseweek[0].second_week
+                return HttpResponse(json.dumps(course1, cls=DateEnconding))
+            else:
+                course2 = {'time': getN_N_day(), 'data': ordercla()}
+                # courseweek[0].second_week=course2
+                courseweek.update(second_week=course2)
+                return HttpResponse(json.dumps(course2, cls=DateEnconding))
         elif id==3:
-            print(3)
-            return HttpResponse(json.dumps(course3,cls=DateEnconding))
+            if courseweek[0].third_week:
+                course3 = courseweek[0].third_week
+                return HttpResponse(json.dumps(course3, cls=DateEnconding))
+            else:
+                course3 = {'time': getN_N_N_day(), 'data': ordercla()}
+                # courseweek[0].third_week=course3
+                # courseweek[0].save()
+                courseweek.update(third_week=course3)
+                return HttpResponse(json.dumps(course3, cls=DateEnconding))
 
 def changecourse(request,id):
+    courseweek=Course_week.objects.all()
     data=request.POST.get('data',None)
     if id==1:
-        course1=data
+        courseweek.update(first_week=data)
     elif id==2:
-        course2=data
+        courseweek.update(second_week=data)
     else:
-        course3=data
+        courseweek.update(third_week=data)
     return redirect(reverse('home:home'))
