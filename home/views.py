@@ -17,6 +17,8 @@ def home(request,id=0):
     id=int(id)
     print(id)
     data=None
+    if not courseweek:
+        return render(request, 'home/index.html', {'data': data})
     if id==1:
         data=courseweek[0].first_week
     elif id==2:
