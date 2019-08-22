@@ -51,6 +51,7 @@
         <div class="son" id="edit" style="background-color:#C398A9;">编辑</div>
         <!--<div class="son" style="background-color:#5597C9;">置顶</div>-->
     </div>
+    <div class="main"></div>
     <!-- <table class="table table-striped table-bordered" style="width:900px;" align="center" contentEditable="true"> -->
         <!-- 表头 -->
         <!-- <tr align="center">
@@ -144,6 +145,7 @@ $(".son1").click(function(){
 })
 
 function getDate(time){
+    console.log(time)
     let str = ""
     time.forEach((item,index)=>{
         str+=`<td>${time[index].slice(4,6)+'月'+time[index].slice(6,8)+"日"}</td>`
@@ -152,7 +154,7 @@ function getDate(time){
 }
 
 function render(data){
-    $("body").remove("table")
+    $(".main").html("")
     let str = `<table class="table table-striped table-bordered" style="width:900px;" align="center" contentEditable="false">
     <tbody>
         <tr align="center"><tr align="center">
@@ -221,7 +223,7 @@ function render(data){
     })
     str+="</tbody></table>"
 
-    $(str).appendTo("body")
+    $(str).appendTo(".main")
 
 }
 
