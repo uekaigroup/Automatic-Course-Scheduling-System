@@ -3,8 +3,7 @@ from classes.models import Classes
 from professional.models import Stage,Professional,StageOrder
 from orderclasses.order_classes import model
 from teacher.models import Teachstage,Teacher
-import numpy as np
-import json
+import json,calendar,datetime,pandas as pd,numpy as np
 from .models import Course_week
 from django.http import JsonResponse
 # Create your views here.
@@ -47,10 +46,6 @@ def teacherorder(ts):
     return sortteacher
 
 # 获取下周时间范围
-import calendar
-import datetime
-
-import pandas as pd
 def getNextday():
     today1 = datetime.date.today()
     today2 = datetime.date.today()
@@ -136,7 +131,6 @@ def getN_N_day():
     date_list = [d.strftime("%Y%m%d") for d in pd.date_range(nextMonday, nextSunday, freq="D")]
     return date_list
 
-
 def getN_N_N_day():
     today1 = datetime.date.today()
     today2 = datetime.date.today()
@@ -171,7 +165,7 @@ def getN_N_N_day():
     date_list = [d.strftime("%Y%m%d") for d in pd.date_range(nextMonday, nextSunday, freq="D")]
     return date_list
 
-
+# 排班级优先级
 def ordercla():
     classes=Classes.objects.all()
     teachstage=Teachstage.objects.all()
@@ -326,15 +320,13 @@ class DateEnconding(json.JSONEncoder):
         if isinstance(o, datetime.date):
             return o.strftime('%Y/%m/%d')
 
-
-
+# 获取课程表
 def getcourse(request,id):
     courseweek=Course_week.objects.all()
     if request.method=='GET':
         id=int(id)
         if id==1:
             if courseweek:
-                print(type(json.loads(courseweek[0].first_week)))
                 course1=courseweek[0].first_week
             else:
                 course1 = {"time":getNextday(),"data":ordercla()}
@@ -363,6 +355,7 @@ def getcourse(request,id):
             course3 = json.loads(course3)
             return JsonResponse(course3)
 
+# 修改保存课程表
 def changecourse(request,id):
     courseweek=Course_week.objects.all()
     data=request.POST.get('data',None)
@@ -378,3 +371,22 @@ def changecourse(request,id):
     else:
         return HttpResponse('信息错误')
     return HttpResponse('ok')
+
+# 通过老师获取阶段
+def teachertostage(request):
+    tname=request.POST.get('tname')
+    teacher=Teacher.objects.filter(name=tname).first()
+    print(teacher)
+    teachstages=Teachstage.objects.filter(teacher=teacher)
+    stagearr=[i.stage.name for i in teachstages]
+    data={'stage':stagearr}
+    return JsonResponse(data)
+
+# 通过阶段获取老师
+def stagetoteacher(request):
+    sname=request.POST.get('sname')
+    stage=Stage.objects.filter(name=sname).first()
+    stages=Teachstage.objects.filter(stage=stage)
+    teacherarr=[i.teacher.name for i in stages]
+    data={'teacher':teacherarr}
+    return JsonResponse(data)
