@@ -134,7 +134,7 @@ def getN_N_day():
     nextMonday = today1.strftime('%Y%m%d')
     nextSunday = today2.strftime('%Y%m%d')
 
-    return [nextMonday,'int(nextMonday)+1','int(nextMonday)+2','int(nextMonday)+3','int(nextMonday)+4','int(nextMonday)+5',nextSunday]
+    return [nextMonday,str(int(nextMonday)+1),str(int(nextMonday)+2),str(int(nextMonday)+3),str(int(nextMonday)+4),str(int(nextMonday)+5),nextSunday]
 
 
 def getN_N_N_day():
@@ -168,7 +168,7 @@ def getN_N_N_day():
     nextMonday = today1.strftime('%Y%m%d')
     nextSunday = today2.strftime('%Y%m%d')
 
-    return [nextMonday,'int(nextMonday)+1','int(nextMonday)+2','int(nextMonday)+3','int(nextMonday)+4','int(nextMonday)+5',nextSunday]
+    return [nextMonday,str(int(nextMonday)+1),str(int(nextMonday)+2),str(int(nextMonday)+3),str(int(nextMonday)+4),str(int(nextMonday)+5),nextSunday]
 
 
 def ordercla():
