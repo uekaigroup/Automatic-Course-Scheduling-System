@@ -50,7 +50,7 @@ def teacherorder(ts):
 import calendar
 import datetime
 
-
+import pandas as pd
 def getNextday():
     today1 = datetime.date.today()
     today2 = datetime.date.today()
@@ -133,8 +133,8 @@ def getN_N_day():
 
     nextMonday = today1.strftime('%Y%m%d')
     nextSunday = today2.strftime('%Y%m%d')
-
-    return [nextMonday,str(int(nextMonday)+1),str(int(nextMonday)+2),str(int(nextMonday)+3),str(int(nextMonday)+4),str(int(nextMonday)+5),nextSunday]
+    date_list = [d.strftime("%Y%m%d") for d in pd.date_range(nextMonday, nextSunday, freq="D")]
+    return date_list
 
 
 def getN_N_N_day():
@@ -168,7 +168,8 @@ def getN_N_N_day():
     nextMonday = today1.strftime('%Y%m%d')
     nextSunday = today2.strftime('%Y%m%d')
 
-    return [nextMonday,str(int(nextMonday)+1),str(int(nextMonday)+2),str(int(nextMonday)+3),str(int(nextMonday)+4),str(int(nextMonday)+5),nextSunday]
+    date_list = [d.strftime("%Y%m%d") for d in pd.date_range(nextMonday, nextSunday, freq="D")]
+    return date_list
 
 
 def ordercla():
@@ -335,7 +336,6 @@ def getcourse(request,id):
             if courseweek:
                 print(type(json.loads(courseweek[0].first_week)))
                 course1=courseweek[0].first_week
-                print("asdfaetwet",course1)
             else:
                 course1 = {"time":getNextday(),"data":ordercla()}
                 course1 = json.dumps(course1)
@@ -366,10 +366,8 @@ def getcourse(request,id):
 def changecourse(request,id):
     courseweek=Course_week.objects.all()
     data=request.POST.get('data',None)
-    if data==None or 'null' or '' or "":
+    if not data:
         return HttpResponse('数据错误')
-    data = json.dumps(data)
-
     id=int(id)
     if id==1:
         courseweek.update(first_week=data)

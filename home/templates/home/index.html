@@ -281,6 +281,8 @@ function save(){
 
     })
     data0.data = data
+    data0=JSON.stringify(data0)
+    {#console.log(data0)#}
     $.ajax({
         'url':url2,
         type:"post",
