@@ -19,6 +19,11 @@ class Teacher(models.Model):
         verbose_name='带课总数',
         default=0,
     )
+    state=models.CharField(
+        max_length=20,
+        verbose_name='老师状态',
+        default='00000000000000'
+    )
     stages = models.ManyToManyField(
         Stage,
         through='Teachstage',

@@ -14,35 +14,28 @@ def home(request):
     classes=Classes.objects.all()
     courseweek=Course_week.objects.all()
     data=courseweek
-    # if not courseweek:
-    #     return render(request, 'home/index.html', {'data': data})
-    # if id==1:
-    #     data=courseweek[0].first_week
-    # elif id==2:
-    #     data = courseweek[0].second_week
-    # elif id==3:
-    #     data = courseweek[0].third_week
     return render(request, 'home/index.html',{'data':data})
     
 
-# 根据前置课程获取阶段优先级排序列表
-def bToA(nowsatge):
-    satges=StageOrder.objects.filter(beforstage=nowsatge)
-    levelarr=[]
-    for i in satges:
-        levelarr.append(i.level)
+# 根据前置课程获取阶段优先级排序列表stages,sortarr
+def bToA(nowstage):
+    stages=StageOrder.objects.filter(beforstage=nowstage)
+    levelarr=[i.level for i in stages]
     nparr=np.array(levelarr)
     sortarr=list(reversed(np.argsort(nparr)))
-    return satges,sortarr
+    print(stages)
+    print(sortarr)
+    return stages,sortarr
 
 # 阶段代课老师优先排序下标
 def teacherorder(ts):
     arr1=[]
     for i in ts:
         arr1.append(i.level)
-
     nparr=np.array(arr1)
-    sortteacher=list(reversed(np.argsort(nparr)))
+    sortteacher = list(reversed(np.argsort(nparr)))
+    print(nparr)
+    print(sortteacher)
     return sortteacher
 
 # 获取下周时间范围
@@ -166,154 +159,309 @@ def getN_N_N_day():
     return date_list
 
 # 排班级优先级
-def ordercla():
-    classes=Classes.objects.all()
-    teachstage=Teachstage.objects.all()
-    teacher=Teacher.objects.all()
-    order=[]
+# def ordercla():
+#     classes=Classes.objects.all()
+#     teachstage=Teachstage.objects.all()
+#     teacher=Teacher.objects.all()
+#     order=[]
+#     for i in classes:
+#         order.append(model.predict([[i.isprofessional,i.education,i.stu_num]])[0][0])
+#     nd=np.array(order)
+#     order_index=list(reversed(np.argsort(nd)))   #获得班级优先级的排序下标
+#     class_sheet_list=[]
+#     used_teachers=None
+#     for i in order_index:        #对每一个班进行排课
+#         i=int(i)
+#         class_sheet = {}
+#         class_sheet['classname']=classes[i].name
+#         class_sheet['area']=classes[i].area
+#         # class_sheet['time']=getNextday()
+#         drection=classes[i].p_id
+#         now_stage=classes[i].now_stage
+#         long_time=Stage.objects.filter(name=now_stage.name).first().hours
+#         now_long_time=classes[i].long_time
+#         if classes[i].is_six:
+#             if long_time-now_long_time>=48:
+#                 class_sheet['stage']=[now_stage.name]
+#                 class_sheet['long_time'] = [48]
+#                 print('前',classes[i].long_time)
+#                 classes[i].long_time += 48
+#                 print('后',classes[i].long_time)
+#                 # Classes.objects
+#                 ts=teachstage.filter(stage=now_stage)
+#                 sortteacher=teacherorder(ts)
+#                 for i in sortteacher:
+#                     i=int(i)
+#                     teacherone=teacher.filter(name=ts[i].teacher.name)
+#                     if teacherone[0].teachtime==0:
+#                         class_sheet['teacher']=[teacherone[0].name]
+#                         teacherone.update(teachtime=1)
+#                         if used_teachers:
+#                             used_teachers = used_teachers | teacherone
+#                         else:
+#                             used_teachers = teacherone
+#                         break
+#                     else:
+#                         continue
+#             # elif 0<long_time-now_long_time<48:
+#             #     class_sheet['stage'] = [now_stage.name]
+#             #     class_sheet['long_time'] = [long_time-now_long_time]
+#             #     classes[i].long_time += long_time-now_long_time
+#             #     stages, sortarr = bToA(now_stage)
+#             else:
+#                 stages, sortarr = bToA(now_stage)
+#                 for i in sortarr:
+#                     i=int(i)
+#                     class_sheet['stage']=stages[i].afterstage.name
+#                     class_sheet['long_time'] = [48]
+#                     classes[i].long_time = 48
+#                     classes[i].now_stage = stages[i].afterstage
+#                     ts = teachstage.filter(stage=stages[i].afterstage)
+#                     sortteacher = teacherorder(ts)
+#                     for i in sortteacher:
+#                         i = int(i)
+#                         teacherone = teacher.filter(name=ts[i].teacher.name)
+#                         if teacherone[0].teachtime == 0:
+#                             class_sheet['teacher'] = [teacherone[0].name]
+#                             if used_teachers:
+#                                 used_teachers = used_teachers | teacherone
+#                             else:
+#                                 used_teachers = teacherone
+#                             teacherone.update(teachtime=1)
+#                             break
+#                         else:
+#                             continue
+#         else:
+#             if long_time-now_long_time>=40:
+#                 class_sheet['stage']=[now_stage.name]
+#                 class_sheet['long_time'] = [40]
+#                 classes[i].long_time += 40
+#                 ts=teachstage.filter(stage=now_stage)
+#                 sortteacher=teacherorder(ts)
+#                 for i in sortteacher:
+#                     i=int(i)
+#                     teacherone=teacher.filter(name=ts[i].teacher.name)
+#                     if teacherone[0].teachtime==0:
+#                         class_sheet['teacher']=[teacherone[0].name]
+#                         if used_teachers:
+#                             used_teachers = used_teachers | teacherone
+#                         else:
+#                             used_teachers = teacherone
+#                         teacherone.update(teachtime=1)
+#                         break
+#                     else:
+#                         continue
+#             # elif 0<long_time-now_long_time<48:
+#             #     class_sheet['stage'] = [now_stage.name]
+#             #     class_sheet['long_time'] = [long_time-now_long_time]
+#             #     classes[i].long_time += long_time-now_long_time
+#             #     stages, sortarr = bToA(now_stage)
+#             else:
+#                 stages, sortarr = bToA(now_stage)
+#                 for i in sortarr:
+#                     i=int(i)
+#                     class_sheet['stage']=stages[i].afterstage.name
+#                     class_sheet['long_time'] = [40]
+#                     classes[i].long_time = 40
+#                     classes[i].now_stage = stages[i].afterstage
+#                     ts = teachstage.filter(stage=stages[i].afterstage)
+#                     sortteacher = teacherorder(ts)
+#                     for i in sortteacher:
+#                         i = int(i)
+#                         teacherone = teacher.filter(name=ts[i].teacher.name)
+#                         if teacherone[0].teachtime == 0:
+#                             class_sheet['teacher'] = [teacherone[0].name]
+#                             if used_teachers:
+#                                 used_teachers = used_teachers | teacherone
+#                             else:
+#                                 used_teachers = teacherone
+#                             teacherone.update(teachtime=1)
+#                             break
+#                         else:
+#                             continue
+#         # 所有老师和已选中老师的差集,并选择助教
+#         # if classes[i].is_teacher2:
+#         # # print('teacher:',teacher)
+#         # # print('used_teachers:',used_teachers)
+#         #     teacher2=teacher.difference(used_teachers)
+#         # # print(teacher2)
+#         #     sortteacher2=[]
+#         #     for i in teacher2:
+#         #         sortteacher2.append(i.classesed)
+#         #     sortteacher2=np.argsort(np.array(sortteacher2))
+#         #     for i in sortteacher2:
+#         #         print(teacher2)
+#         #         class_sheet['teacher2']=[teacher2[i].name]
+#         #         teacher2[i].update(teachtime=1)
+#
+#         classes[i].save()
+#         class_sheet_list.append(class_sheet)
+#     Teacher.objects.all().update(teachtime=0)
+#     # print(class_sheet_list)
+#
+#
+#
+#     return class_sheet_list
+
+# 返回班级下标sortclass
+def sort_class():
+    classes = Classes.objects.all()
+    order = []
     for i in classes:
-        order.append(model.predict([[i.isprofessional,i.education,i.stu_num]])[0][0])
-    nd=np.array(order)
-    order_index=list(reversed(np.argsort(nd)))   #获得班级优先级的排序下标
+        order.append(model.predict([[i.isprofessional, i.education, i.stu_num, i.is_outside]])[0][0])
+    sortclass = list(reversed(np.argsort(np.array(order))))
+    return sortclass
+
+# 返回对于某阶段的老师以及排序下标teacherarr,sortteacher
+def sort_teacher(stage):
+    teacherstage=Teachstage.objects.all()
+    tss=teacherstage.filter(stage=stage)
+    teacherarr=[i.teacher for i in tss]
+    sortteacher=list(reversed(np.argsort(np.array([i.level for i in tss]))))
+    return teacherarr,sortteacher
+
+
+def ordercla():
+    classes=Classes.objects.all() #班级
+    teachstage=Teachstage.objects.all()  #老师和阶段
+    teacher=Teacher.objects.all()  #老师
+    for i in teacher:
+        i.state='00000000000000'
+        i.save()
+    stage=Stage.objects.all() # 阶段
     class_sheet_list=[]
-    used_teachers=None
-    for i in order_index:        #对每一个班进行排课
+    sortclass=sort_class()
+    for i in sortclass:
         i=int(i)
-        class_sheet = {}
-        class_sheet['classname']=classes[i].name
+        class_sheet={}
+        class_i=classes[i]
+        classesname=class_sheet['classname']=classes[i].name
         class_sheet['area']=classes[i].area
-        # class_sheet['time']=getNextday()
-        drection=classes[i].p_id
-        now_stage=classes[i].now_stage
-        long_time=Stage.objects.filter(name=now_stage.name).first().hours
-        now_long_time=classes[i].long_time
-        if classes[i].is_six:
-            if long_time-now_long_time>=48:
-                class_sheet['stage']=[now_stage.name]
-                class_sheet['long_time'] = [48]
-                print('前',classes[i].long_time)
-                classes[i].long_time += 48
-                print('后',classes[i].long_time)
-                # Classes.objects
-                ts=teachstage.filter(stage=now_stage)
-                sortteacher=teacherorder(ts)
-                for i in sortteacher:
-                    i=int(i)
-                    teacherone=teacher.filter(name=ts[i].teacher.name)
-                    if teacherone[0].teachtime==0:
-                        class_sheet['teacher']=[teacherone[0].name]
-                        teacherone.update(teachtime=1)
-                        if used_teachers:
-                            used_teachers = used_teachers | teacherone
-                        else:
-                            used_teachers = teacherone
-                        break
-                    else:
-                        continue
-            # elif 0<long_time-now_long_time<48:
-            #     class_sheet['stage'] = [now_stage.name]
-            #     class_sheet['long_time'] = [long_time-now_long_time]
-            #     classes[i].long_time += long_time-now_long_time
-            #     stages, sortarr = bToA(now_stage)
+        class_sheet['course']=[]    #班级每天上下午的课程，包含14个列表
+        nowstage=classes[i].now_stage
+        longtime=int(stage.filter(name=nowstage.name).first().hours)
+        now_long_time=int(classes[i].long_time)
+        around=int(classes[i].around)
+        week_time=around * 4 #本周上课总课时
+        work_day=around #本周上课天数
+        # 如果剩余课时大于一周课时进行周排
+        if longtime - now_long_time >= week_time:
+            print(1)
+            halfday={}
+            halfday['stage'] = nowstage.name
+            classes.filter(name=classesname).update(long_time=now_long_time + week_time)
+            teacherarr, sortteacher = sort_teacher(nowstage)
+            for b in sortteacher:
+                b=int(b)
+                if teacherarr[b].state=='00000000000000':
+                    halfday['teacher']=teacherarr[b].name
+                    teacherstate=teacherarr[b]
+                    teacherstate.state='11111111111111'
+                    teacherstate.save()
+                    break
+                else:
+                    continue
             else:
-                stages, sortarr = bToA(now_stage)
-                for i in sortarr:
-                    i=int(i)
-                    class_sheet['stage']=stages[i].afterstage.name
-                    class_sheet['long_time'] = [48]
-                    classes[i].long_time = 48
-                    classes[i].now_stage = stages[i].afterstage
-                    ts = teachstage.filter(stage=stages[i].afterstage)
-                    sortteacher = teacherorder(ts)
-                    for i in sortteacher:
-                        i = int(i)
-                        teacherone = teacher.filter(name=ts[i].teacher.name)
-                        if teacherone[0].teachtime == 0:
-                            class_sheet['teacher'] = [teacherone[0].name]
-                            if used_teachers:
-                                used_teachers = used_teachers | teacherone
-                            else:
-                                used_teachers = teacherone
-                            teacherone.update(teachtime=1)
-                            break
-                        else:
-                            continue
+                halfday['teacher']='没有空闲老师'
+            class_sheet['course'].append(halfday)  #直接排出一周的课
+            class_sheet['course']=class_sheet['course']*around  #每半天都相同*周期
+        # 如果剩余课时为零，下一个阶段进行周排
+        elif longtime == now_long_time:
+            print(2)
+            halfday = {}
+            stages, sortarr=bToA(nowstage)
+            if not len(stages):
+                halfday['stage'] = '结训'
+                continue
+            print('stages',stages)
+            print(int(sortarr[0]))
+            afterstage = stages[int(sortarr[0])].afterstage
+            halfday['stage'] = afterstage.name
+            class_i.now_stage=afterstage
+            class_i.long_time=week_time
+            class_i.save()
+            teacherarr, sortteacher = sort_teacher(afterstage)
+            for b in sortteacher:
+                b = int(b)
+                if teacherarr[b].state == '00000000000000':
+                    halfday['teacher'] = teacherarr[b].name
+                    teacherstate = teacherarr[b]
+                    teacherstate.state = '11111111111111'
+                    teacherstate.save()
+                    break
+                else:
+                    continue
+            else:
+                halfday['teacher'] = '没有空闲老师'
+            class_sheet['course'].append(halfday)  # 直接排出一周的课
+            class_sheet['course'] = class_sheet['course'] * around  # 每半天都相同*周期
+        # 以上都不符合，进行单排
         else:
-            if long_time-now_long_time>=40:
-                class_sheet['stage']=[now_stage.name]
-                class_sheet['long_time'] = [40]
-                classes[i].long_time += 40
-                ts=teachstage.filter(stage=now_stage)
-                sortteacher=teacherorder(ts)
-                for i in sortteacher:
-                    i=int(i)
-                    teacherone=teacher.filter(name=ts[i].teacher.name)
-                    if teacherone[0].teachtime==0:
-                        class_sheet['teacher']=[teacherone[0].name]
-                        if used_teachers:
-                            used_teachers = used_teachers | teacherone
-                        else:
-                            used_teachers = teacherone
-                        teacherone.update(teachtime=1)
-                        break
-                    else:
-                        continue
-            # elif 0<long_time-now_long_time<48:
-            #     class_sheet['stage'] = [now_stage.name]
-            #     class_sheet['long_time'] = [long_time-now_long_time]
-            #     classes[i].long_time += long_time-now_long_time
-            #     stages, sortarr = bToA(now_stage)
-            else:
-                stages, sortarr = bToA(now_stage)
-                for i in sortarr:
-                    i=int(i)
-                    class_sheet['stage']=stages[i].afterstage.name
-                    class_sheet['long_time'] = [40]
-                    classes[i].long_time = 40
-                    classes[i].now_stage = stages[i].afterstage
-                    ts = teachstage.filter(stage=stages[i].afterstage)
-                    sortteacher = teacherorder(ts)
-                    for i in sortteacher:
-                        i = int(i)
-                        teacherone = teacher.filter(name=ts[i].teacher.name)
-                        if teacherone[0].teachtime == 0:
-                            class_sheet['teacher'] = [teacherone[0].name]
-                            if used_teachers:
-                                used_teachers = used_teachers | teacherone
-                            else:
-                                used_teachers = teacherone
-                            teacherone.update(teachtime=1)
+            print(3)
+            # 排每个半天 j代表一周上几个上下午
+            for j in range(around):
+                halfday={}
+                # 如果还没有进入下一个阶段
+                if longtime-now_long_time>4:
+                    halfday['stage']=nowstage.name
+                    now_long_time=int(classes[i].long_time)
+                    classes.filter(name=classesname).update(long_time=now_long_time+4)
+                    teacherarr,sortteacher=sort_teacher(nowstage)
+                    # 遍历老师下标
+                    for z in sortteacher:
+                        z=int(z)
+                        teacher=teacherarr[z]
+                        state=list(teacher.state)
+                        # 判断老师状态
+                        print('state',state)
+                        print(j)
+                        if state[j]=='0':
+                            halfday['teacher']=teacher.name
+                            state[j]='1'
+                            teacher.state=''.join(state)
+                            teacher.save()
                             break
                         else:
                             continue
-        # 所有老师和已选中老师的差集,并选择助教
-        # if classes[i].is_teacher2:
-        # # print('teacher:',teacher)
-        # # print('used_teachers:',used_teachers)
-        #     teacher2=teacher.difference(used_teachers)
-        # # print(teacher2)
-        #     sortteacher2=[]
-        #     for i in teacher2:
-        #         sortteacher2.append(i.classesed)
-        #     sortteacher2=np.argsort(np.array(sortteacher2))
-        #     for i in sortteacher2:
-        #         print(teacher2)
-        #         class_sheet['teacher2']=[teacher2[i].name]
-        #         teacher2[i].update(teachtime=1)
-
-
-
-            
-
-
-        classes[i].save()
+                    else:
+                        halfday['teacher'] = '没有空闲老师'
+                    class_sheet['course'].append(halfday)
+                else:
+                    stages, sortarr = bToA(nowstage)
+                    if not len(stage):
+                        halfday['stage'] = '结训'
+                        continue
+                    print(int(sortarr[0]))
+                    print('stages',stages)
+                    afterstage = stages[int(sortarr[0])].afterstage
+                    halfday['stage'] = afterstage.name
+                    class_i.now_stage = afterstage
+                    class_i.long_time = week_time
+                    class_i.save()
+                    teacherarr, sortteacher = sort_teacher(afterstage)
+                    for b in sortteacher:
+                        b = int(b)
+                        if teacherarr[b].state[j] == '0':
+                            halfday['teacher'] = teacherarr[b].name
+                            teacherstate = teacherarr[b]
+                            state = list(teacherstate.state)
+                            state[j] = '1'
+                            teacherstate.state = ''.join(state)
+                            teacherstate.save()
+                            break
+                        else:
+                            continue
+                    else:
+                        halfday['teacher'] = '没有空闲老师'
+                    class_sheet['course'].append(halfday)
         class_sheet_list.append(class_sheet)
-    Teacher.objects.all().update(teachtime=0)
-    # print(class_sheet_list)
-
-
-
+    print(class_sheet_list)
     return class_sheet_list
+
+
+
+
+
 
 class DateEnconding(json.JSONEncoder):
     def default(self, o):
@@ -390,3 +538,8 @@ def stagetoteacher(request):
     teacherarr=[i.teacher.name for i in stages]
     data={'teacher':teacherarr}
     return JsonResponse(data)
+
+
+def data(request):
+    ordercla()
+    return HttpResponse('123')

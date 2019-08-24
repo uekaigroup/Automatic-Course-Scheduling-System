@@ -65,17 +65,24 @@ class Classes(models.Model):
         (1,'本科')),
         default=0,verbose_name='学历'
     )
-    # next_stage = models.ForeignKey(
-    #     to=Stage,
-    #     on_delete=models.CASCADE,
-    #     verbose_name='预测下阶段内容',
-    #     related_name='next_stage',
-    #     null=True,
-    # )
+    now_teacher=models.CharField(
+        max_length=20,
+        verbose_name='当前代课老师名字',
+        default=' '
+    )
     is_six=models.IntegerField(choices=(
         (0,'不是六天制'),
         (1,'是六天制')),
         default=0,verbose_name='是否为六天制'
+    )
+    around=models.IntegerField(
+        verbose_name='上课周期',
+        default=5
+    )
+    someday=models.CharField(
+        max_length=20,
+        verbose_name='哪几天上课',
+        default='0'
     )
     is_teacher2 = models.IntegerField(choices=(
         (0, '不需要助教'),
@@ -85,7 +92,7 @@ class Classes(models.Model):
     is_outside = models.IntegerField(choices=(
         (0, '不是校外课程'),
         (1, '是校外课程')),
-        default=0, verbose_name='是否需要助教'
+        default=0, verbose_name='是否校外课程'
     )
     area=models.CharField(
         max_length=20,
